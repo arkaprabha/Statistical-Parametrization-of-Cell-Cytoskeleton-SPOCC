@@ -1,0 +1,75 @@
+(FixedInternalImagePixelType "float")
+(MovingInternalImagePixelType "float")
+(FixedImageDimension 2)
+(MovingImageDimension 2)
+(UseDirectionCosines "true")
+
+// **************** IMPORTANT **************************
+
+(Registration "MultiResolutionRegistration")
+(Interpolator "BSplineInterpolator")
+(ResampleInterpolator "FinalBSplineInterpolator")
+(Resampler "DefaultResampler")
+
+// These may be changed to Fixed/MovingSmoothingImagePyramid.// See the manual.
+(FixedImagePyramid "FixedShrinkingImagePyramid")
+(MovingImagePyramid "MovingShrinkingImagePyramid")
+//(FixedImagePyramid "FixedSmoothingImagePyramid")
+//(MovingImagePyramid "MovingSmoothingImagePyramid")
+
+// The following components are most important:
+// The optimizer AdaptiveStochasticGradientDescent (ASGD) works
+// quite ok in general. The Transform and Metric are important
+// and need to be chosen careful for each application. See manual.
+(Optimizer "AdaptiveStochasticGradientDescent")
+
+// **************** Transform: BSplie (non-rigid) and  ********************
+//(Transform "AffineTransform")
+(Transform "BSplineTransform")
+
+(Metric "AdvancedMattesMutualInformation")
+
+// The control point spacing of the bspline transformation in 
+// the finest resolution level. Can be specified for each 
+// dimension differently. Unit: mm.
+// The lower this value, the more flexible the deformation.
+// Low values may improve the accuracy, but may also cause
+// unrealistic deformations. This is a very important setting!
+// We recommend tuning it for every specific application. It is
+// difficult to come up with a good 'default' value.
+(FinalGridSpacingInPhysicalUnits 50)
+
+(HowToCombineTransforms "Compose")
+// ****************************************
+
+(NumberOfHistogramBins 32)
+(ErodeMask "false")
+
+// try with 1 too
+(NumberOfResolutions 5)
+
+(MaximumNumberOfIterations 1000)
+(NumberOfSpatialSamples 2048)
+(NewSamplesEveryIteration "true")
+(ImageSampler "Random")
+
+// ************* Interpolation and Resampling ****************
+
+// Order of B-Spline interpolation used during registration/optimisation.
+// It may improve accuracy if you set this to 3. Never use 0.
+// An order of 1 gives linear interpolation. This is in most 
+// applications a good choice.
+(BSplineInterpolationOrder 3)
+
+// Order of B-Spline interpolation used for applying the final
+// deformation.
+// 3 gives good accuracy; recommended in most cases.
+// 1 gives worse accuracy (linear interpolation)
+// 0 gives worst accuracy, but is appropriate for binary images
+// (masks, segmentations); equivalent to nearest neighbor interpolation.
+(FinalBSplineInterpolationOrder 3)
+
+(DefaultPixelValue 0)
+(WriteResultImage "true")
+(ResultImagePixelType "short")
+(ResultImageFormat "mhd")
